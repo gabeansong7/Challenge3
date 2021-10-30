@@ -113,85 +113,9 @@ function passwordLength(){
    alert('Please provide a length greater than 8 and less than 128!')
    return passwordLength();
  }
- return parseInt(length)
+ return parseInt(length);
 
 }
-
-
-
-// get random element from array 
-
-//function getRandom() {
-  //var arrIndex = Math.floor(Math.random() * arr.length);
-  //var arrElement = arr(arrIndex);
-
-  //return arrElement
-//}
-
-
-
-function generatePassword() {
-  
-  var options = getUserOptions()
-  var potentialChars = [];
-  var mustHaveChars = [];
-  var passwordArr = [];
-
-  //// if userChoices.upperCase === true 
-  //// musthavechars.push(random char from array)
-
-  if (options.upperCase === true){
-    potentialChars = potentialChars.concat(upperCase);
-    mustHaveChars.push(getRandom(upperCase));
-  }
-  
-//// if userChoices.lowerCase === true 
-  //// musthavechars.push(random char from array)
-
-  if (options.lowerCase === true){
-    potentialChars = potentialChars.concat(lowerCase);
-    mustHaveChars.push(getRandom(lowerCase))
-    
-  }
-
-//// if userChoices.specialCharacters === true 
-  //// musthavechars.push(random char from array)
-
-  if (options.specialCharacters === true){
-    potentialChars = potentialChars.concat(specialCharacters);
-    mustHaveChars.push(getRandom(specialCharacters))
-  }
-//// if userChoices.numericCharacters === true 
-  //// musthavechars.push(random char from array)
-
-  if (options.numericCharacters === true){
-    potentialChars = potentialChars.concat(numericCharacters);
-    mustHaveChars.push(getRandom(numericCharacters))
-  }
-
-//// loop to the length of the asked for password
-  //// push from potentialChars to PasswordArray 
-
-  for (var i=0; i<options.length; i++){
-    var potentialChar = getRandom(potentialChars)
-    passwordArr.push(potentialChar)
-  }
-
-
-////loop through mustHaveChars
-  //// replace for each one in the passwordArray;
-
-  for (var i=0; i<mustHaveChars.length; i++){
-    passwordArr[i] = mustHaveChars[i]
-  }
-
-   //// join array to string
-
-  return passwordArr.join('')
-
-  
-}
-
 
 function getUserOptions() {
 
@@ -222,39 +146,69 @@ function getUserOptions() {
 
   return userChoices;
 
-  //ask for length
-  //var length = prompt('How long would you like your password to be? (between 8-128 for best security)')
-  
-  // sign to userOptions
-   //userChoices.length = length;
-
-   //var upperCase = confirm('Do you want Upper case characters?')
-
-   // sign to userOptions
-   //userChoices.upperCase = upperCase;
-
-   //var lowerCase = confirm('Do you want Lower case characters?')
-
-   //userChoices.lowerCase = lowerCase;
-
-   //var specialCharacters = confirm('Do you want Special characters?')
-
-   //userChoices.specialCharacters = specialCharacters;
-
-   //var numericCharacters = confirm('Do you want Numeric Characters?')
-
-   //userChoices.numericCharacters = numericCharacters;
-
-  
-   //return userChoices;
   
 }
+
+function generateRandom(characters) {
+  return characters[Math.floor(Math.random() * characters.length)];
+}
+
+
+function generatePassword() {
+  
+  var length = passwordLength();
+  var charArr = getUserOptions();
+
+  function password() {
+
+    var storage = [];
+
+    var result = '';
+
+    while (storage.length != length) {
+      storage.push(generateRandom(charArr.combinedChars))
+    }
+    if (charArr.hasUpperCase){
+      if (!storage.some((idx)=>upperCase.indexOf(idx)>0)){
+        return password();
+      }
+    }
+
+    if (charArr.hasLowerCase){
+      if (!storage.some((idx)=>lowerCase.indexOf(idx)>0)){
+        return password();
+      }
+    }
+
+    if (charArr.hasSpecialChars){
+      if (!storage.some((idx)=>specialCharacters.indexOf(idx)>0)){
+        return password();
+      }
+    }
+
+    if (charArr.hasNumericChars){
+      if (!storage.some((idx)=>numericCharacters.indexOf(idx)>0)){
+        return password();
+      }
+    }
+    result = storage.join('');
+    return result; 
+    
+  }
+  return password();
+}
+
+
+
+
+
+
+
 // Write password to the #password input
 function writePassword() {
 
 
   // Get user options
-  var userChoices = getUserOptions();
   var password = generatePassword();
   var passwordText = document.querySelector("#password");
 
